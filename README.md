@@ -308,13 +308,6 @@ The result is converted to:
 ```text
 XX years YY months
 ```
-
-### Assumption
-
-The source `lease_commence_date` contains only a year.
-
-The implementation therefore assumes that the lease begins in January of the lease commencement year.
-
 ---
 
 # 5. Duplicate Handling
@@ -351,6 +344,43 @@ resale_price
 Duplicate records after the first occurrence are separated into the quarantine dataset.
 
 The retained record is therefore the record with the highest resale price.
+
+---
+
+# 6. Resale Price Anomaly Detection
+
+- Potential resale price anomalies are identified using a **peer-group comparison heuristic**.
+- Transactions are grouped by:
+  - `month` (year-month)
+  - `town`
+  - `flat_type`
+- The **median resale price** is calculated for each peer group because it is less sensitive to unusually high or low transactions than the mean.
+- Each transaction is compared against the median resale price of its corresponding peer group.
+- A transaction is flagged as a **potential anomaly** when its resale price deviates significantly from the peer-group median, using a simple initial threshold such as **±50%**.
+- Flagged records are treated as records for further review rather than automatically removed, as unusually high or low prices may still represent valid transactions.
+
+---
+
+# 7. Data Quality Validation
+
+The following additional validation checks can be applied:
+
+- **Missing value validation**  
+  Check critical fields such as `month`, `town`, `flat_type`, `block`, `floor_area_sqm`, `lease_commence_date`, and `resale_price` for null or missing values.
+
+- **Numeric value validation**  
+  Validate that numeric fields such as `resale_price` and `floor_area_sqm` contain positive values and do not contain invalid negative or zero values.
+  Check `floor_area_sqm` to be in the correct unit measures, and not in square feet or square centimeters.
+
+- **Lease validation**  
+  Ensure that `lease_commence_date` is not later than the transaction year and that the calculated remaining lease falls within the expected range of 0 to 99 years.
+
+- **Schema consistency validation**  
+  Check that the expected columns and data types are consistent across the source datasets before they are combined into the master dataset.
+
+- Records that fail validation checks should be flagged for review and can be placed in the **Quarantined** output rather than being silently discarded.
+
+---
 
 ### Outputs
 
