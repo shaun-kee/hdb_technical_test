@@ -1,0 +1,29 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment variables / secrets
+.env
+
+# macOS
+.DS_Store
+
+# VS Code settings
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Generated datasets
+data/raw/
+data/edited/
+data/cleaned/
+data/transformed/
+data/hashed/
