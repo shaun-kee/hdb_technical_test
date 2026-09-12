@@ -21,9 +21,3 @@ venv/
 # Logs
 *.log
 
-# Generated datasets
-data/raw/
-data/edited/
-data/cleaned/
-data/transformed/
-data/hashed/
