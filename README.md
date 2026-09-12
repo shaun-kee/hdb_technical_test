@@ -370,42 +370,6 @@ Duplicate records are retained for traceability instead of being silently discar
 
 ---
 
-# 6. Resale Price Anomaly Detection
-
-The project includes a mechanism for identifying potentially anomalous resale prices.
-
-The proposed approach is to apply an Interquartile Range (IQR) rule within comparable transaction groups such as:
-
-```text
-year
-town
-flat_type
-```
-
-For each group:
-
-```text
-IQR = Q3 - Q1
-```
-
-Potential anomalies are identified where:
-
-```text
-resale_price < Q1 - 1.5 × IQR
-```
-
-or:
-
-```text
-resale_price > Q3 + 1.5 × IQR
-```
-
-These records should be treated as potential anomalies rather than automatically assumed to be incorrect.
-
-Potential anomalies can be placed into the quarantined dataset for review.
-
----
-
 # Output Datasets
 
 The project produces the following logical output groups.
