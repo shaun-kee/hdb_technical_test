@@ -126,7 +126,7 @@ Transformed / Quarantined Data
 
 ---
 
-# 1. Data Extraction
+# Data Extraction
 
 Dataset metadata is obtained programmatically from the data.gov.sg Collection API using collection ID:
 
@@ -166,7 +166,7 @@ The raw source files are retained without manual modification.
 
 ---
 
-# 2. Data Profiling
+# Data Profiling
 
 Data profiling is performed using `ProfileReport`.
 
@@ -200,7 +200,7 @@ The profiling reports are used to review:
 
 ---
 
-# 3. Dataset Schema Normalisation
+# Dataset Schema Normalisation
 
 Profiling identified that some source datasets contain an existing:
 
@@ -254,114 +254,7 @@ data/cleaned/master_dataset.csv
 
 ---
 
-# 4. Remaining Lease Calculation
-
-HDB leases are assumed to have a duration of 99 years.
-
-The transaction month is supplied in:
-
-```text
-YYYY-MM
-```
-
-format.
-
-Example:
-
-```text
-2015-06
-```
-
-It is converted to a datetime value using:
-
-```python
-pd.to_datetime(
-    data["month"],
-    format="%Y-%m"
-)
-```
-
-The number of months already used is calculated from the transaction date and `lease_commence_date`.
-
-```text
-used months =
-(transaction year - lease commencement year) × 12
-+ transaction month
-- 1
-```
-
-Total lease duration:
-
-```text
-99 × 12 = 1188 months
-```
-
-Remaining lease:
-
-```text
-remaining months =
-1188 - used months
-```
-
-The result is converted to:
-
-```text
-XX years YY months
-```
----
-
-# 5. Duplicate Handling
-
-The composite key is defined as all source columns excluding:
-
-```text
-resale_price
-```
-
-Where multiple records share the same composite key, the record with the higher resale price is retained.
-
-The implementation first sorts records by:
-
-```python
-resale_price
-```
-
-in descending order.
-
-```python
-data = data.sort_values(
-    by="resale_price",
-    ascending=False
-)
-```
-
-The composite key is then created using all columns except:
-
-```text
-resale_price
-```
-
-Duplicate records after the first occurrence are separated into the quarantine dataset.
-
-The retained record is therefore the record with the highest resale price.
-
----
-
-# 6. Resale Price Anomaly Detection
-
-- Potential resale price anomalies are identified using a **peer-group comparison heuristic**.
-- Transactions are grouped by:
-  - `month` (year-month)
-  - `town`
-  - `flat_type`
-- The **median resale price** is calculated for each peer group because it is less sensitive to unusually high or low transactions than the mean.
-- Each transaction is compared against the median resale price of its corresponding peer group.
-- A transaction is flagged as a **potential anomaly** when its resale price deviates significantly from the peer-group median, using a simple initial threshold such as **±50%**.
-- Flagged records are treated as records for further review rather than automatically removed, as unusually high or low prices may still represent valid transactions.
-
----
-
-# 7. Data Quality Validation
+# Data Quality Validation
 
 The following additional validation checks can be applied:
 
