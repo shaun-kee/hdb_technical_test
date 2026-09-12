@@ -458,10 +458,3 @@ The following enhancements may be considered:
 - summary metrics for transformed and quarantined records
 - additional anomaly detection rules
 
----
-
-# Repository Submission
-
-The Jupyter Notebook should contain execution guidance, inline comments, Markdown explanations and representative outputs.
-
-The technical-test assignment PDF should not be committed to the public Git repository.
