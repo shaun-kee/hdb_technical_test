@@ -251,6 +251,19 @@ The resulting combined dataset is stored as:
 ```text
 data/cleaned/master_dataset.csv
 ```
+---
+
+# Resale Price Anomaly Detection
+
+- Potential resale price anomalies are identified using a **peer-group comparison heuristic**.
+- Transactions are grouped by:
+  - `month` (year-month)
+  - `town`
+  - `flat_type`
+- The **median resale price** is calculated for each peer group because it is less sensitive to unusually high or low transactions than the mean.
+- Each transaction is compared against the median resale price of its corresponding peer group.
+- A transaction is flagged as a **potential anomaly** when its resale price deviates significantly from the peer-group median, using a simple initial threshold such as **±50%**.
+- Flagged records are treated as records for further review rather than automatically removed, as unusually high or low prices may still represent valid transactions.
 
 ---
 
